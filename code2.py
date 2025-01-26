@@ -28,10 +28,14 @@ def analyze_sentiments(client, feedback_list):
 def plot_pie_chart(sentiment_counts):
     """Plot a pie chart of sentiment counts."""
     fig, ax = plt.subplots()
-    labels = sentiment_counts.keys()
-    sizes = sentiment_counts.values()
+    labels = ["Optimistic", "Constructive", "Mixed"]  # Updated labels
+    sizes = [
+        sentiment_counts.get("positive", 0),
+        sentiment_counts.get("negative", 0),
+        sentiment_counts.get("neutral", 0)
+    ]
     colors = ['#2ecc71', '#e74c3c', '#f1c40f']
-    explode = (0.1, 0, 0)  # Explode the positive slice slightly
+    explode = (0.1, 0, 0)  # Explode the optimistic slice slightly
     ax.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%', colors=colors, startangle=140)
     ax.set_title("Sentiment Distribution")
     st.pyplot(fig)
@@ -42,22 +46,24 @@ def plot_wordcloud(words, title):
     fig, ax = plt.subplots()
     ax.imshow(wordcloud, interpolation='bilinear')
     ax.axis("off")
-    ax.set_title(title)
+    ax.set_title(title, fontsize=16)
     st.pyplot(fig)
 
 def main():
-    st.title("Student Feedback Analysis")
+    st.set_page_config(page_title="Feedback Analysis", layout="wide")
+    st.title("📈 Student Feedback Analysis")
 
-    # Upload CSV file
-    uploaded_file = st.file_uploader("Upload your feedback file", type=["csv"])
-    
+    # Sidebar for file upload
+    st.sidebar.header("Upload Feedback Data")
+    uploaded_file = st.sidebar.file_uploader("Upload your feedback CSV file", type=["csv"])
+
     if uploaded_file:
         df = pd.read_csv(uploaded_file)
-        
+
         # Extract feedback text from the second column
         feedback_text = df.iloc[:, 1].tolist()
-        st.subheader("Uploaded Feedback")
-        st.write(df)
+        st.subheader("Uploaded Feedback Data")
+        st.dataframe(df, use_container_width=True)
 
         # Authenticate and analyze sentiment
         client = authenticate_client()
@@ -67,9 +73,17 @@ def main():
         sentiments = [result.sentiment for result in sentiment_results]
         sentiment_counts = Counter(sentiments)
 
-        # Display Sentiment Distribution
-        st.subheader("Sentiment Distribution")
-        plot_pie_chart(sentiment_counts)
+        # Display sentiment distribution
+        st.subheader("Sentiment Analysis Results")
+        col1, col2 = st.columns([2, 3])
+
+        with col1:
+            st.markdown("### Sentiment Distribution")
+            plot_pie_chart(sentiment_counts)
+
+        with col2:
+            st.markdown("### Sentiment Counts")
+            st.write(pd.DataFrame(sentiment_counts.items(), columns=["Sentiment", "Count"]))
 
         # Extract common keywords from feedback
         positive_feedback = [feedback_text[i] for i, result in enumerate(sentiment_results) if result.sentiment == "positive"]
@@ -83,22 +97,17 @@ def main():
         positive_keywords = {word: count for word, count in positive_keywords.items() if word.lower() not in stopwords}
         negative_keywords = {word: count for word, count in negative_keywords.items() if word.lower() not in stopwords}
 
-        # Display Word Clouds
-        st.subheader("Common Positive Feedback Keywords")
-        plot_wordcloud(positive_keywords, "Positive Feedback Keywords")
+        # Display word clouds
+        st.subheader("Keyword Analysis")
+        col3, col4 = st.columns(2)
 
-        st.subheader("Common Negative Feedback Keywords")
-        plot_wordcloud(negative_keywords, "Negative Feedback Keywords")
+        with col3:
+            st.markdown("### Positive Feedback Keywords")
+            plot_wordcloud(positive_keywords, "Positive Feedback")
 
-        # Suggestions for Improvement
-        st.subheader("Suggestions for Improvement")
-        st.write("Based on the analysis, here are some suggestions:")
-        st.write("- Focus on addressing the following areas:")
-        for keyword in list(negative_keywords.keys())[:5]:
-            st.write(f"  - {keyword.capitalize()}")
-        st.write("- Maintain and enhance the following aspects:")
-        for keyword in list(positive_keywords.keys())[:5]:
-            st.write(f"  - {keyword.capitalize()}")
+        with col4:
+            st.markdown("### Negative Feedback Keywords")
+            plot_wordcloud(negative_keywords, "Negative Feedback")
 
     else:
         st.warning("Please upload a CSV file to proceed.")
