@@ -28,14 +28,14 @@ def analyze_sentiments(client, feedback_list):
 def plot_pie_chart(sentiment_counts):
     """Plot a pie chart of sentiment counts."""
     fig, ax = plt.subplots()
-    labels = ["Optimistic", "Constructive", "Mixed"]  # Updated labels
+    labels = ["Satisfactory", "Needs Improvement", "Neutral"]  # Updated labels
     sizes = [
         sentiment_counts.get("positive", 0),
         sentiment_counts.get("negative", 0),
         sentiment_counts.get("neutral", 0)
     ]
     colors = ['#2ecc71', '#e74c3c', '#f1c40f']
-    explode = (0.1, 0, 0)  # Explode the optimistic slice slightly
+    explode = (0.1, 0, 0)  # Explode the satisfactory slice slightly
     ax.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%', colors=colors, startangle=140)
     ax.set_title("Sentiment Distribution")
     st.pyplot(fig)
@@ -83,7 +83,14 @@ def main():
 
         with col2:
             st.markdown("### Sentiment Counts")
-            st.write(pd.DataFrame(sentiment_counts.items(), columns=["Sentiment", "Count"]))
+            sentiment_table = pd.DataFrame(
+                {"Sentiment": ["Satisfactory", "Needs Improvement", "Neutral"],
+                 "Count": [
+                     sentiment_counts.get("positive", 0),
+                     sentiment_counts.get("negative", 0),
+                     sentiment_counts.get("neutral", 0)]}
+            )
+            st.write(sentiment_table)
 
         # Extract common keywords from feedback
         positive_feedback = [feedback_text[i] for i, result in enumerate(sentiment_results) if result.sentiment == "positive"]
