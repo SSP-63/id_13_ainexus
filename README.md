@@ -15,7 +15,7 @@ https://feedbackais.streamlit.app/
 
 ## Usage Instructions
 1. Visit the deployed application:https://feedbackais.streamlit.app/
-2. Upload a CSV file containing feedback data (Given in the repo use it). The CSV file should have only two columns: **number** and **feedback**, as the current project is configured to process these two columns using the pandas library.
+2. Upload a CSV file containing feedback data (Given in the repo "demo1.csv" use it). The CSV file should have only two columns: **number** and **feedback**, as the current project is configured to process these two columns using the pandas library.
 3. View sentiment analysis results, keyword insights, and visualizations.
 
 ## Technologies Used
