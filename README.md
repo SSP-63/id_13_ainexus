@@ -30,6 +30,17 @@ https://feedbackais.streamlit.app/
 2. **Analysis**: The Azure Text Analytics API processes the feedback to classify sentiment and extract keywords.
 3. **Visualization**: Results are displayed as a pie chart, table, and word clouds for better comprehension.
 
+   ![image](https://github.com/user-attachments/assets/d454f36b-10d6-4e2c-a429-b9ed5e4710fc)
+
+
+   ![Screenshot 2025-01-27 215318](https://github.com/user-attachments/assets/3f479bfd-0761-4151-a4b7-ff274f855531)
+
+
+   ![image](https://github.com/user-attachments/assets/ba4972da-5c19-4733-8e0a-ee536e7cc5e1)
+
+
 ## Note
 - This project is made by Shreyash Pawar and Ranveer Phakade as a problem statement in hackathon conducted by WCE MLSC community named HackAIBlitz.
+
+
 
