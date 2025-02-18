@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 import streamlit as st
 import pandas as pd
 from wordcloud import WordCloud
@@ -6,9 +8,20 @@ from collections import Counter
 from azure.ai.textanalytics import TextAnalyticsClient
 from azure.core.credentials import AzureKeyCredential
 
+# Load environment variables from .env file
+load_dotenv()
+
 # Azure Text Analytics API Setup
-API_KEY = "5Phr7UTKDnI4T8i3IlnvFNTf2vxjctS7mgSQ2diNbUDdm5Pl5oXMJQQJ99BAACYeBjFXJ3w3AAAaACOGa7G3"
-ENDPOINT = "https://hackassp.cognitiveservices.azure.com/"
+API_KEY = os.getenv("API_KEY")
+ENDPOINT = os.getenv("ENDPOINT")
+
+def authenticate_client():
+    """Authenticate Azure Text Analytics client."""
+    credentials = AzureKeyCredential(API_KEY)
+    client = TextAnalyticsClient(endpoint=ENDPOINT, credential=credentials)
+    return client
+
+# (Rest of the code remains unchanged)
 
 def authenticate_client():
     """Authenticate Azure Text Analytics client."""
